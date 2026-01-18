@@ -13,7 +13,7 @@ pipeline {
             }
         }
 
-        stage('Validate Files') {
+        stage('Validate Application') {
             steps {
                 sh '''
                     set -e
@@ -22,14 +22,21 @@ pipeline {
             }
         }
 
-        stage('Deploy') {
+        stage('Prepare Web Root') {
             steps {
                 sh '''
                     set -e
-                    sudo rm -rf ${WEB_ROOT}/*
-                    sudo cp -r . ${WEB_ROOT}/
-                    sudo chown -R www-data:www-data ${WEB_ROOT}
-                    sudo chmod -R 755 ${WEB_ROOT}
+                    mkdir -p ${WEB_ROOT}
+                '''
+            }
+        }
+
+        stage('Deploy Application') {
+            steps {
+                sh '''
+                    set -e
+                    rm -rf ${WEB_ROOT}/*
+                    cp -r . ${WEB_ROOT}/
                 '''
             }
         }
@@ -37,7 +44,7 @@ pipeline {
 
     post {
         success {
-            echo "✅ Deployment successful"
+            echo "✅ Web app deployed successfully"
         }
         failure {
             echo "❌ Deployment failed"
