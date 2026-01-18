@@ -17,15 +17,12 @@ pipeline {
             steps {
                 sh '''
                     set -e
-                    if [ ! -f index.html ]; then
-                      echo "ERROR: index.html not found"
-                      exit 1
-                    fi
+                    test -f index.html
                 '''
             }
         }
 
-        stage('Deploy to Nginx') {
+        stage('Deploy') {
             steps {
                 sh '''
                     set -e
@@ -36,12 +33,11 @@ pipeline {
                 '''
             }
         }
-
     }
 
     post {
         success {
-            echo "✅ Deployment completed successfully"
+            echo "✅ Deployment successful"
         }
         failure {
             echo "❌ Deployment failed"
